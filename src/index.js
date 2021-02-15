@@ -41,6 +41,10 @@ class Board extends React.Component {
                 - can use start (inclusive) and end (exclusive) arguments to represent the bounding indices to be copied
     */
     const squares = this.state.squares.slice();
+    // if there is a winner return early
+    if (calculateWinner(squares) || squares[i]){
+      return;
+    }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
 
     this.setState({
@@ -66,7 +70,14 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    const winner = calculateWinner(this.state.squares);
+    let status;
+
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
 
     return (
         <div>
@@ -113,3 +124,37 @@ ReactDOM.render(
     <Game />,
     document.getElementById('root')
 );
+
+/*
+    calculateWinner(squares)
+    - input --  array of 9 squares
+    - will check for a winner
+    - outpus -- 'X', 'O', or null
+
+    to be called from the Board's render function to check if a player has won
+ */
+function calculateWinner(squares) {
+  // create SD array of winning lines across, down, diagonal
+  const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+  ]
+
+  // loop over the lines
+  for (let i = 0; i < lines.length; i++){
+    // create array of the three squares of the current line
+    const [a, b, c] = lines[i];
+    // if the three square all have the same value return the first squares value
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  // otherwise no winner return null
+  return null;
+}
