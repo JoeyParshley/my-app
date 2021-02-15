@@ -1,12 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
+// Create three react components 'Square', 'Board' and 'Game'
 class Square extends React.Component {
+  // constructor
+  constructor(props) {
+    /*
+        In JavaScript classes, you need to always call super when defining the constructor of a subclass.
+        All React component classes that have a constructor should start with a super(props) call.
+     */
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+
   render() {
     return (
-        <button className="square">
-          {/* TODO */}
+        /*
+          onClick={ () => alert('click') }
+          passing a function [ () => alert('click') ] as the onClick prop
+        */
+        <button
+            className="square"
+
+            onClick={() => this.setState( {value: 'X'})}
+        >
+          {/* show the current state's value */}
+          {this.state.value}
         </button>
     );
   }
@@ -14,7 +35,8 @@ class Square extends React.Component {
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square />;
+    // pass a prop called 'value'
+    return <Square value={i} />;
   }
 
   render() {
