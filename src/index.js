@@ -9,69 +9,27 @@ function Square(props) {
       </button>
   );
 }
-// class Square extends React.Component {
-//   /*
-//       Square component does not maintain state, the component receives values from the Board component
-//       and informs the Board component when they're clicked
-//       They are now Controlled Components -- the Board has full control over them
-//
-//       It was converted into a function component which is a simpler way to write components that only contain a
-//       render method and dont have their own state.
-//         - instead of defining a class that extends React.Component we can write a function that take props as
-//           input and returns what should be rendered
-//    */
-//   // constructor
-//   constructor(props) {
-//     /*
-//         In JavaScript classes, you need to always call super when defining the constructor of a subclass.
-//         All React component classes that have a constructor should start with a super(props) call.
-//      */
-//     super(props);
-//     this.state = {
-//       value: null,
-//     };
-//   }
-//
-//   render() {
-//     return (
-//         /*
-//           onClick={ () => alert('click') }
-//           passing a function [ () => this.props.onClick() ] as the onClick prop
-//         */
-//
-//         /*
-//           when a Square is clicked the onClickfunction provided by the Board is called
-//             - onClick prop on the built-in DOM <button> component tells React to set up a click event listener
-//             - button clicked
-//               - React calls the onClick even handler that is defined in Square's render() method
-//                 - This event handler calls this.props.onClick(). The Square's onClick prop was specified by the Board
-//             - Since the board passed onClick={ () => this.handleClick(i) } to Square, the Square calls
-//               this.handleClick(i) when clicked
-//             - handleClick() is currenlty undefined so clicking the square will result in
-//               "this.handleClick is not a function"
-//         */
-//         <button
-//             className="square"
-//             onClick={() => this.props.onClick()}
-//         >
-//           {this.props.value}
-//         </button>
-//     );
-//   }
-// }
 
 class Board extends React.Component {
   constructor(props) {
     super(props);
-    // set boards initial state to contain an array of 9 nulls corresponding to the 9 squares
+    /*
+        set boards initial state to contain an array of 9 nulls corresponding to the 9 squares
+        and X to be the first move by default. each time a player moves xIsNext will be flipped
+        to determine whose turn it is and games state will be saved
+
+        The Board's handleClick function is responsible for flipping xIsNext
+    */
     this.state = {
       squares: Array(9).fill(null),
+      xIsNext: true,
     };
   }
 
   /*
     handleClick(i) function:
     - allows clicking on the squares to fill them.
+    - flips the xIsNext flag
     - now state is stored in the Board component instead of the individual Square components
     - when the Board's state changes, the Square components re-render automatically
     - keeping the state of all the squares in the Board component will allow it to determine the winner
@@ -83,8 +41,12 @@ class Board extends React.Component {
                 - can use start (inclusive) and end (exclusive) arguments to represent the bounding indices to be copied
     */
     const squares = this.state.squares.slice();
-    squares[i] = 'X';
-    this.setState({squares: squares});
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext,  // flips whose turn it is
+    });
   }
 
   renderSquare(i) {
